@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blackjack 21</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" type="image/x-icon" href="static/cards/AS.png">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="controls-left">
+        <label>Baralhos:
+          <select id="decksSelect">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="6" selected>6</option>
+            <option value="8">8</option>
+          </select>
+        </label>
+      </div>
+      <div class="controls-right">
+        <div class="bankroll">Saldo: $<span id="bankroll">1000</span></div>
+        <div class="bet">Aposta: $<span id="betAmount">0</span></div>
+        <button id="clearBet" class="secondary">Limpar</button>
+      </div>
+    </header>
+
+    <main class="table">
+      <img class="felt" src="table.jpg" alt="Mesa" />
+
+      <div class="table-banner banner-top">BLACKJACK</div>
+
+      <section class="dealer-area">
+        <div class="hand" id="dealerHand"></div>
+        <div class="hand-total">Dealer: <span id="dealerTotal">0</span></div>
+      </section>
+
+      <section class="player-area">
+        <div class="bet-circle" id="betCircle"></div>
+        <div class="hand" id="playerHand"></div>
+        <div class="hand-total">Você: <span id="playerTotal">0</span></div>
+      </section>
+
+      <aside class="right-panel">
+        <div class="panel-box">
+          <div>Estourar (%): <strong id="bustProb">0</strong></div>
+          <div>Dica: <strong id="basicHint">-</strong></div>
+        </div>
+        <div class="panel-box chips-tray" id="chipsTray">
+          <button class="chip" data-value="5" title="$5"><img src="static/chips/5.png" alt="5" /></button>
+          <button class="chip" data-value="10" title="$10"><img src="static/chips/10.png" alt="10" /></button>
+          <button class="chip" data-value="20" title="$20"><img src="static/chips/20.png" alt="20" /></button>
+          <button class="chip" data-value="50" title="$50"><img src="static/chips/50.png" alt="50" /></button>
+          <button class="chip" data-value="100" title="$100"><img src="static/chips/100.png" alt="100" /></button>
+          <button class="chip" data-value="500" title="$500"><img src="static/chips/500.png" alt="500" /></button>
+        </div>
+        <div class="panel-box message" id="message">Pronto para jogar.</div>
+      </aside>
+
+      <div class="countdown overlay" id="countdown" aria-hidden="true">
+        <svg viewBox="0 0 40 40">
+          <circle class="bg" cx="20" cy="20" r="18"></circle>
+          <circle class="progress" id="countdownCircle" cx="20" cy="20" r="18"></circle>
+        </svg>
+        <div class="countdown-number" id="countdownNumber">10</div>
+      </div>
+
+
+      <footer class="actions">
+        <button id="dealBtn" class="primary">Entrar</button>
+        <button id="hitBtn" disabled>Pedir</button>
+        <button id="standBtn" disabled>Parar</button>
+        <button id="doubleBtn" disabled>Dobrar</button>
+        <button id="splitBtn" disabled>Dividir</button>
+      </footer>
+    </main>
+  </div>
+
+  <audio id="sndDeal" src="sounds/swish.m4a" preload="auto"></audio>
+  <audio id="sndCard" src="sounds/tink.wav" preload="auto"></audio>
+  <audio id="sndWin" src="sounds/cheer.wav" preload="auto"></audio>
+  <audio id="sndLose" src="sounds/ohh.mp3" preload="auto"></audio>
+  <audio id="sndPush" src="sounds/aww.mp3" preload="auto"></audio>
+  <audio id="sndCash" src="sounds/cash.mp3" preload="auto"></audio>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
