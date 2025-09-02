@@ -1,5 +1,5 @@
 * { box-sizing: border-box; }
-body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #fff; background: #0b0f0d; }
+body { margin: 5px; font-family: Arial, Helvetica, sans-serif; color: #fff; background: #0b0f0d; }
 
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #15271f; border-bottom: 1px solid rgba(255,255,255,0.08); }
 .topbar label { margin-right: 12px; font-size: 14px; }
@@ -62,3 +62,70 @@ body { margin: 0; font-family: Arial, Helvetica, sans-serif; color: #fff; backgr
   .bet-circle { width: 120px; height: 120px; }
 }
 
+/* Styles for rules screen */
+.rules-screen {
+  position: fixed;
+  inset: 0;
+  background-color: #0b0f0d;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 50px 20px 20px 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.rules-content {
+  max-width: 600px;
+  background: rgba(21, 39, 31, 0.95);
+  border-radius: 12px;
+  padding: 30px 40px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.rules-content h1 {
+  margin-top: 0;
+  color: #ffd76a;
+  font-weight: 900;
+  font-size: 28px;
+  text-align: center;
+}
+
+.rules-content h2 {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 20px;
+  text-align: center;
+  color: #ffd76a;
+}
+
+.rules-content ul {
+  margin-left: 20px;
+  margin-bottom: 20px;
+}
+
+.rules-content li {
+  margin-bottom: 10px;
+}
+
+.play-button {
+  display: block;
+  margin: 20px auto 0 auto;
+  padding: 12px 30px;
+  font-size: 18px;
+  font-weight: 700;
+  background-color: #1f7a4c;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.35);
+  transition: background-color 0.3s ease;
+}
+
+.play-button:hover {
+  background-color: #166435;
+}

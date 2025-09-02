@@ -5,10 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Blackjack 21</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" type="image/x-icon" href="static/cards/AS.png">
 </head>
 <body>
-  <div id="app">
+  <div id="rulesScreen" class="rules-screen">
+    <div class="rules-content">
+      <h1>Regras do Blackjack 21</h1>
+      <h2>Instruções e Conceitos Matemáticos</h2>
+      <p><strong>Objetivo:</strong> Chegar o mais próximo possível de 21 sem ultrapassar, vencendo o dealer.</p>
+      <p><strong>Valores das Cartas:</strong> Ás = 11 (ou 1 se necessário), 10/J/Q/K = 10, outras = valor nominal.</p>
+      <h3>Probabilidades e Porcentagens:</h3>
+      <ul>
+        <li><strong>Probabilidade de BUST (estourar):</strong> Calcule a chance de ultrapassar 21 ao pedir uma carta. Por exemplo, se sua mão soma 17, há cartas que podem fazer você bustar (ex: 5+ = 22). Use porcentagens para decidir: se >50% chance de bustar, considere parar.</li>
+        <li><strong>Combinações de Mãos:</strong> Blackjack (ÁS + 10) paga 3:2. Pares podem ser divididos. Calcule combinações possíveis: com 2 baralhos, probabilidade de blackjack inicial é ~4.8%.</li>
+        <li><strong>Estratégia Básica:</strong> Com base em porcentagens, pare se sua mão for 17+ (baixa chance de melhorar sem bustar). Peça se <12. Considere a carta visível do dealer: se ele tem 7+, risque pedir se você tem 12-16.</li>
+      </ul>
+      <p><strong>Apostas:</strong> Escolha fichas, clique "Entrar" para começar a rodada. Use matemática para gerenciar seu saldo!</p>
+      <p><strong>Dica:</strong> Pratique cálculos de probabilidade para tomar decisões inteligentes.</p>
+      <button id="playBtn" class="play-button">Jogar</button>
+    </div>
+  </div>
+  <div id="app" style="display: none;">
     <header class="topbar">
       <div class="controls-left">
         <label>Baralhos:

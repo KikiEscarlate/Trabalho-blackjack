@@ -39,6 +39,9 @@
 
   const clearBetBtn = el('clearBet');
   const decksSelect = el('decksSelect');
+  const playBtn = el('playBtn');
+  const rulesScreen = el('rulesScreen');
+  const appDiv = el('app');
   // removed adjustable timer and autoplay controls
 
   const snd = {
@@ -485,14 +488,20 @@
     state.shoe = createShoe(state.decks);
     setMessage(`Baralhos: ${state.decks}. Shoe novo.`);
   });
+
+  playBtn.addEventListener('click', () => {
+    rulesScreen.style.display = 'none';
+    appDiv.style.display = 'block';
+    startPreRoundCountdown();
+  });
+
   // removed adjustable timer and autoplay listeners
 
   // Init
   state.shoe = createShoe(state.decks);
   updateHUD();
   renderHands();
-  // start pre-round countdown on load
-  startPreRoundCountdown();
+  // Rules screen is shown first, countdown starts on play button click
 })();
 
 
