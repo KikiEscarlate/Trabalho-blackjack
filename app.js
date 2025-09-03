@@ -17,6 +17,8 @@
 
   // Elements
   const el = (id) => document.getElementById(id);
+
+  // Cache DOM elements
   const dealerHandEl = el('dealerHand');
   const playerHandEl = el('playerHand');
   const dealerTotalEl = el('dealerTotal');
@@ -27,9 +29,9 @@
   const betCircleEl = el('betCircle');
   const bustProbEl = el('bustProb');
   const hintEl = el('basicHint');
-  const countdownEl = document.getElementById('countdown');
-  const countdownCircle = document.getElementById('countdownCircle');
-  const countdownNumber = document.getElementById('countdownNumber');
+  const countdownEl = el('countdown');
+  const countdownCircle = el('countdownCircle');
+  const countdownNumber = el('countdownNumber');
 
   const dealBtn = el('dealBtn');
   const hitBtn = el('hitBtn');
@@ -157,6 +159,13 @@
     computeAndShowStats();
   }
 
+  // Utility to enable or disable multiple buttons
+  function setButtonsEnabled(buttons, enabled) {
+    buttons.forEach(btn => {
+      if (btn) btn.disabled = !enabled;
+    });
+  }
+
   function enableActions(canHitStand) {
     hitBtn.disabled = !canHitStand;
     standBtn.disabled = !canHitStand;
@@ -172,7 +181,6 @@
     if (state.bankroll < value) return;
     state.bankroll -= value;
     state.pendingBet += value;
-    // place a small chip image into bet circle stack
     renderBetCircle();
     updateHUD();
   }
@@ -189,7 +197,6 @@
     betCircleEl.innerHTML = '';
     const amountToRender = state.inRound ? state.activeBet : state.pendingBet;
     if (amountToRender <= 0) return;
-    // render chips stacked roughly proportional: greedy by denominations
     const denoms = [500,100,50,20,10,5];
     let remain = amountToRender;
     let idx = 0;
@@ -213,10 +220,9 @@
   function startRound() {
     if (state.inRound) return;
     if (state.pendingBet <= 0) { setMessage('Selecione fichas para apostar.'); return; }
-    // hide pre-round countdown when entering and stop the timer
     if (countdownEl) {
       countdownEl.setAttribute('aria-hidden', 'true');
-      countdownEl.style.display = 'none'; // force hide
+      countdownEl.style.display = 'none';
     }
     if (state.timerTickId) { clearInterval(state.timerTickId); state.timerTickId = null; }
 
@@ -232,7 +238,7 @@
     state.dealerHand = [];
     state.dealerHoleHidden = true;
     setMessage('Distribuindo...');
-    snd.deal && snd.deal.play().catch(()=>{});
+    snd.deal && snd.deal.play().catch(() => {});
 
     // deal sequence: P, D(up), P, D(hole)
     state.playerHand.push(drawCard());
@@ -241,7 +247,6 @@
     state.dealerHand.push(drawCard());
     renderHands();
 
-    // natural checks
     const playerBJ = isBlackjack(state.playerHand);
     const dealerBJ = isBlackjack(state.dealerHand);
     if (playerBJ || dealerBJ) {
@@ -252,7 +257,6 @@
 
     setMessage('Sua vez.');
     enableActions(true);
-    // no in-turn countdown; only pre-round countdown
   }
 
   function revealDealer() {
@@ -263,11 +267,10 @@
   function hit() {
     if (!state.inRound || !state.canAct) return;
     state.playerHand.push(drawCard());
-    snd.card && snd.card.play().catch(()=>{});
+    snd.card && snd.card.play().catch(() => {});
     renderHands();
     const total = handTotal(state.playerHand);
     if (total > 21) {
-      // bust
       state.canAct = false;
       revealDealer();
       endRound('lose');
@@ -287,12 +290,13 @@
     if (!state.inRound || !state.canAct) return;
     if (state.playerHand.length !== 2) return;
     if (state.bankroll < state.activeBet) return;
-    // take additional stake
+
     state.bankroll -= state.activeBet;
     state.activeBet *= 2;
     updateHUD();
-    // one card only then stand
+
     hit();
+
     if (handTotal(state.playerHand) <= 21) {
       state.canAct = false;
       revealDealer();
@@ -301,7 +305,6 @@
   }
 
   function dealerPlayThenResolve() {
-    // Dealer hits until 17 (S17)
     while (handTotal(state.dealerHand) < 17) {
       state.dealerHand.push(drawCard());
     }
@@ -330,24 +333,24 @@
   function endRound(outcome) {
     let msg = '';
     if (outcome === 'blackjack') {
-      const win = Math.floor(state.activeBet * 2.5); // pays 3:2
+      const win = Math.floor(state.activeBet * 2.5);
       state.bankroll += win;
       msg = `Blackjack! Você ganha $${win - state.activeBet}.`;
-      snd.win && snd.win.play().catch(()=>{});
-      snd.cash && snd.cash.play().catch(()=>{});
+      snd.win && snd.win.play().catch(() => {});
+      snd.cash && snd.cash.play().catch(() => {});
     } else if (outcome === 'win') {
       const win = state.activeBet * 2;
       state.bankroll += win;
       msg = `Você venceu $${state.activeBet}.`;
-      snd.win && snd.win.play().catch(()=>{});
-      snd.cash && snd.cash.play().catch(()=>{});
+      snd.win && snd.win.play().catch(() => {});
+      snd.cash && snd.cash.play().catch(() => {});
     } else if (outcome === 'push') {
-      state.bankroll += state.activeBet; // return bet
+      state.bankroll += state.activeBet;
       msg = 'Empate. Aposta devolvida.';
-      snd.push && snd.push.play().catch(()=>{});
+      snd.push && snd.push.play().catch(() => {});
     } else {
       msg = `Você perdeu $${state.activeBet}.`;
-      snd.lose && snd.lose.play().catch(()=>{});
+      snd.lose && snd.lose.play().catch(() => {});
     }
 
     setMessage(msg);
@@ -359,7 +362,6 @@
     enableActions(false);
     updateHUD();
     renderBetCircle();
-    // start pre-round countdown overlay
     startPreRoundCountdown();
   }
 
@@ -371,7 +373,6 @@
       return;
     }
     const total = handTotal(state.playerHand);
-    const need = 22 - total; // smallest value that would bust is need<=0
     let bustCards = 0;
     const remaining = state.shoe.length;
     if (remaining <= 0) {
@@ -379,28 +380,20 @@
       hintEl.textContent = '-';
       return;
     }
-    // approximate by counting card values directly from remaining cards
-    const values = [];
-    for (const c of state.shoe) {
-      const val = c.v === 11 && c.r==='A' ? 11 : c.v;
-      values.push(val);
-    }
+    const values = state.shoe.map(c => (c.v === 11 && c.r === 'A') ? 11 : c.v);
     for (const v of values) {
-      // consider Ace flexibility: if v==11, it can be 1 if needed
       const effective = (v === 11 && total + 11 > 21) ? 1 : v;
       if (total + effective > 21) bustCards++;
     }
     const prob = Math.round((bustCards / remaining) * 100);
     bustProbEl.textContent = `${prob}`;
 
-    // very simplified hint
     let hint = 'Parar';
     if (total <= 11) hint = 'Pedir';
     else if (total === 12) hint = 'Pedir';
     else if (total >= 13 && total <= 16) {
-      // peek dealer upcard if visible
       const up = state.dealerHand[0];
-      const upVal = up ? (up.v === 11 && up.r==='A' ? 11 : up.v) : 10;
+      const upVal = up ? ((up.v === 11 && up.r === 'A') ? 11 : up.v) : 10;
       hint = upVal >= 7 ? 'Pedir' : 'Parar';
     } else if (total >= 17) hint = 'Parar';
     hintEl.textContent = hint;
@@ -495,13 +488,58 @@
     startPreRoundCountdown();
   });
 
+  const rulesBtn = el('rulesBtn');
+  const closeRulesBtn = el('closeRulesBtn');
+
+  rulesBtn.addEventListener('click', () => {
+    rulesScreen.style.display = 'flex';
+    appDiv.style.display = 'none';
+  });
+
+  closeRulesBtn.addEventListener('click', () => {
+    rulesScreen.style.display = 'none';
+    appDiv.style.display = 'block';
+  });
+
   // removed adjustable timer and autoplay listeners
 
-  // Init
-  state.shoe = createShoe(state.decks);
-  updateHUD();
-  renderHands();
-  // Rules screen is shown first, countdown starts on play button click
+function detectDeviceType() {
+  const ua = navigator.userAgent || navigator.vendor || window.opera;
+  const isMobile = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua.toLowerCase());
+  return isMobile ? 'mobile' : 'desktop';
+}
+
+const chipsTray = document.getElementById('chipsTray');
+const rightPanel = document.querySelector('.right-panel');
+const playerArea = document.querySelector('.player-area');
+
+function applyDeviceClass() {
+  const deviceType = detectDeviceType();
+  const appDiv = document.getElementById('app');
+  if (!appDiv) return;
+  appDiv.classList.remove('mobile', 'desktop');
+  appDiv.classList.add(deviceType);
+  console.log(`Device detected: ${deviceType}`);
+
+  if (!chipsTray || !rightPanel || !playerArea) return;
+
+  if (deviceType === 'mobile') {
+    if (chipsTray.parentElement !== playerArea) {
+      playerArea.appendChild(chipsTray);
+    }
+  } else {
+    if (chipsTray.parentElement !== rightPanel) {
+      rightPanel.appendChild(chipsTray);
+    }
+  }
+}
+
+window.addEventListener('load', applyDeviceClass);
+window.addEventListener('resize', applyDeviceClass);
+
+state.shoe = createShoe(state.decks);
+updateHUD();
+renderHands();
 })();
 
 
